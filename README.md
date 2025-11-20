@@ -1,1 +1,1 @@
-# Unsuoervised Anomaly Detection
+# Unsupervised Anomaly Detection
