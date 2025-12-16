@@ -43,9 +43,36 @@ The repository includes implementations and evaluation of:
 GlioblastomaRatMultiOffset-UAD/
 │
 ├── data/                  # Preprocessed MRI / Z-spectra data
-├── models/                # Model definitions (CAE, baselines)
 ├── notebooks/             # Analysis and visualization notebooks
-├── scripts/               # Training and testing scripts
 ├── utils/                 # Metrics, plotting, helper functions
 ├── requirements.txt
 └── README.md
+```
+## Requirements
+
+- Python ≥ 3.8  
+- PyTorch ≥ 1.10  
+- NumPy  
+- SciPy  
+- scikit-learn  
+- Matplotlib / Seaborn  
+- nibabel (for MRI data handling)
+
+Install dependencies with:
+
+```bash
+pip install -r requirements.txt
+## Requirements
+```
+- Python ≥ 3.8  
+- PyTorch ≥ 1.10  
+- NumPy  
+- SciPy  
+- scikit-learn  
+- Matplotlib / Seaborn  
+- nibabel (for MRI data handling)
+
+Install dependencies with:
+
+```bash
+pip install -r requirements.txt
