@@ -14,6 +14,7 @@ This work is motivated by challenges in pre-clinical MRI, where labeled tumor ma
 - **Domain:** Pre-clinical MRI (glioblastoma rat model)  
 - **Key idea:** Train models only on healthy brain data and flag deviations as anomalies  
 - **Data:** Multi-offset MRI / Z-spectra (e.g., 8, 26, 52 offsets)
+![Unsupervised anomaly detection results in a glioblastoma rat model](RAT_UAD_Fig.png)
 
 ---
 
