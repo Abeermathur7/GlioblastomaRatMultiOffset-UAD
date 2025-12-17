@@ -4,7 +4,7 @@
 
 This repository contains code and experiments for **unsupervised anomaly detection (UAD)** in multi-offset MRI data acquired from a **glioblastoma (GBM) rat model**. The objective is to detect tumor-associated abnormalities **without requiring lesion labels during training**, by learning the distribution of healthy brain tissue and identifying deviations (reconstruction error).
 
-This work is motivated by challenges in healthcare data science where labeled tumor masks are scarce and signal characteristics vary across frequency offsets. By leveraging reconstruction-based and distance-based unsupervised models, this project studies how **multi-offset information improves tumor detection performance**.
+This work is motivated by challenges in computational healthcare research where labeled tumor masks are scarce and signal characteristics vary across frequency offsets. By leveraging reconstruction-based and distance-based unsupervised models, this project studies how **multi-offset information improves tumor detection performance**.
 
 ---
 
