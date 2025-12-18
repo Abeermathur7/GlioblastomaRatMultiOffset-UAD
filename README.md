@@ -16,7 +16,7 @@ This work is motivated by challenges in computational healthcare research where 
 - **Data:** Multi-offset MRI / Z-spectra (e.g., 8, 26, 52 offsets)
 
 
-![Unsupervised anomaly detection results in a glioblastoma rat model](RAT_UAD_Fig.png)
+![Unsupervised anomaly detection results in a glioblastoma rat model](RAT_UAD_Fig.jpg)
 
 ---
 
