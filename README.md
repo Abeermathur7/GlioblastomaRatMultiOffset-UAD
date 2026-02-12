@@ -1,19 +1,19 @@
 # GlioblastomaRatMultiOffset-UAD
 
-**Unsupervised Anomaly Detection for Multi-Offset MRI in a Glioblastoma Rat Model**
+**Unsupervised Anomaly Detection in a Glioblastoma Rat Model using CEST MRI**
 
-This repository contains code and experiments for **unsupervised anomaly detection (UAD)** in multi-offset MRI data acquired from a **glioblastoma (GBM) rat model**. The objective is to detect tumor-associated abnormalities **without requiring lesion labels during training**, by learning the distribution of healthy brain tissue and identifying deviations (reconstruction error).
+This repository contains code and experiments for **unsupervised anomaly detection (UAD)** in chemical exchange saturation transfer (CEST) Z-spectra data acquired from a **glioblastoma (GBM) rat model**. The objective is to detect tumor-associated abnormalities **without requiring manually annotated labels during training** by learning the distribution of Z-spectra from healthy brain tissue and identifying deviations in glioblastoma pathology.
 
-This work is motivated by challenges in computational healthcare research where labeled tumor masks are scarce and signal characteristics vary across frequency offsets. By leveraging reconstruction-based and distance-based unsupervised models, this project studies how **multi-offset information improves tumor detection performance**.
+This work is motivated by challenges in computational healthcare research where labeled tumor masks are scarce and the heterogeneity of glioblastoma phenotypes makes delineation of tumor boundaries difficult by conventional imaging techniques. By leveraging machine learning models, including deep learning architectures, this project studies how **metabolic information from CEST improves tumor detection performance**.
 
 ---
 
 ## Overview
 
-- **Task:** Unsupervised voxel-wise anomaly detection  
-- **Domain:** Pre-clinical MRI (glioblastoma rat model)  
+- **Task:** Unsupervised anomaly detection using Z-spectra from CEST MRI
+- **Domain:** Pre-clinical MRI (glioblastoma rat model) 
 - **Key idea:** Train models only on healthy brain data and flag deviations as anomalies  
-- **Data:** Multi-offset MRI / Z-spectra (e.g., 8, 26, 52 offsets)
+- **Data:** Z-spectra (e.g., 8, 26, 52 offsets) from CEST MRI acquired at saturation power (B1) = 1.0µT and saturation duration = 3 seconds.
 
 
 ![Unsupervised anomaly detection results in a glioblastoma rat model](RAT_UAD_Fig.jpg)
@@ -25,18 +25,18 @@ This work is motivated by challenges in computational healthcare research where 
 The repository includes implementations and evaluation of:
 
 - **Autoencoder-based models**
-  - Convolutional Autoencoders (CAE)
+  - Convolutional Autoencoder (CAE)
   - Reconstruction-error–based anomaly scoring
 - **Classical unsupervised baselines**
   - Isolation Forest
   - Local Outlier Factor (LOF)
-  - PCA-based anomaly detection
 - **Evaluation metrics**
   - ROC curves and AUC
-  - Precision–Recall curves
+  - Precision–Recall curves and AUC
   - Dice overlap with manual tumor masks
+  - F1-score, accuracy, precision, recall
 - **Offset ablation studies**
-  - Performance comparison across reduced offset sets to assess robustness vs. acquisition cost
+  - Performance comparison across reduced offset sets to assess robustness vs. accelerated acquisition (retrospective)
 
 ---
 
