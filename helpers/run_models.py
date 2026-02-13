@@ -4,39 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from helpers.models import *
-import datetime
-import os
 import numpy as np
-import tqdm
-def test(model, test_loader):
-
-    device = (
-        "cuda"
-        if torch.cuda.is_available()
-        else "mps"
-        if torch.backends.mps.is_available()
-        else "cpu"
-        )
-    model.to(device)
-
-    model.eval()
-
-    # all_outputs = np.zeros((len(test_loader.dataset), input_dims))
-    # batch_counter = 0
-    all_outputs = []
-
-    with torch.no_grad():
-        for data in test_loader:
-            inputs = data[0].to(device)
-            outputs = model(inputs)
-            
-            # all_outputs[batch_counter:(batch_counter + data.shape[0]),:] = np.squeeze(outputs.cpu())
-            # batch_counter += data.shape[0]
-            all_outputs.append(np.squeeze(outputs.cpu()))
-            
-    return np.concatenate(all_outputs, axis = 0)
-        
-
 
 def train(
     model,
@@ -159,98 +127,7 @@ def train(
 
     return history
 
-def train_vae(model, epochs, train_loader, val_loader, model_save_path, model_name):
-
-    device = (
-        "cuda"
-        if torch.cuda.is_available()
-        else "mps"
-        if torch.backends.mps.is_available()
-        else "cpu"
-        )
-    model.to(device)
-
-    optimizer = optim.Adam(model.parameters(), lr = 0.0001)
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max = 10)
-
-    history = {'Training loss': [],
-               'Reconstruction loss': [],
-               'KL loss': [],
-                'Validation loss': []}
-
-    best_vloss = 1e6
-    early_stop_thresh = 10
-    
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    os.mkdir(os.path.join(model_save_path, str(timestamp)))
-    
-    chkpt_dir = os.path.join(model_save_path, str(timestamp))
-    
-    for epoch in range(epochs):
-        
-        print('EPOCH {}:'.format(epoch + 1))
-        running_train_loss = 0
-        running_recon_loss = 0
-        running_kl_loss = 0
-        running_val_loss = 0
-
-        model.train()
-        for _, data in tqdm.tqdm(enumerate(train_loader, 0), unit="batch", total=len(train_loader)):
-            
-                # inputs = data.to(device)
-                inputs = data[0].to(device)      
-                optimizer.zero_grad()
-                outputs, mu_train, var_train = model(inputs)
-                loss, recon_loss, kl_loss = vae_lossfn(outputs, inputs, mu_train, var_train)
-                loss.backward()
-                
-                optimizer.step()
-                
-                running_train_loss += loss.item()  
-                running_recon_loss += recon_loss.item()
-                running_kl_loss += kl_loss.item()
-        
-        model.eval()
-        with torch.no_grad():
-            for _, vdata in enumerate(val_loader):
-                v_inputs = vdata[0].to(device)
-                
-                outputs, mu_val, var_val = model(v_inputs)
-                vloss, _, _ = vae_lossfn(outputs, v_inputs, mu_val, var_val)
-
-                running_val_loss += vloss.item()
-        
-        avg_loss = running_train_loss / len(data)
-        avg_recon_loss = running_recon_loss / len(data)
-        avg_kl_loss = running_kl_loss / len(data)
-        avg_vloss = running_val_loss / len(vdata)
-        
-
-        history['Training loss'].append(avg_loss)
-        history['Reconstruction loss'].append(avg_recon_loss)
-        history['KL loss'].append(avg_kl_loss)
-        history['Validation loss'].append(avg_vloss)
-
-
-        print('Loss: train {} valid {} recon {} KL {}'.format(avg_loss, avg_vloss, avg_recon_loss, avg_kl_loss))
-
-        if avg_vloss < best_vloss:
-            best_vloss = avg_vloss  
-            best_epoch = epoch
-            torch.save(model.state_dict(), os.path.join(chkpt_dir,model_name + '.pth'))
-        elif epoch - best_epoch > early_stop_thresh:
-            print('Early stopping stopped at epoch {}'.format(epoch))
-            break
-    
-    scheduler.step()
-    
-    return history
-def vae_lossfn(recon, inputs, mu, logvar, beta=1e-4):
-    recon_loss = torch.nn.functional.mse_loss(recon, inputs, reduction='mean')
-    kld = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
-    return recon_loss + beta * kld, recon_loss, kld
-
-def test_vae(model, test_loader):
+def test(model, test_loader):
 
     device = (
         "cuda"
@@ -262,29 +139,16 @@ def test_vae(model, test_loader):
     model.to(device)
 
     model.eval()
-
-    # all_outputs = np.zeros((len(test_loader.dataset), input_dims))
-    # batch_counter = 0
     all_outputs = []
-    all_mu = []
-    all_var = []
 
     with torch.no_grad():
         for data in test_loader:
-            inputs = data.to(device)
-            outputs, mu, var = model(inputs)
-            
-            # all_outputs[batch_counter:(batch_counter + data.shape[0]),:] = np.squeeze(outputs.cpu())
-            # batch_counter += data.shape[0]
+            inputs = data[0].to(device)
+            outputs = model(inputs)
+
             all_outputs.append(np.squeeze(outputs.cpu()))
-            all_mu.append(np.squeeze(mu.cpu()))
-            all_var.append(np.squeeze(var.cpu()))
-    
-    all_outputs = np.concatenate(all_outputs, axis = 0)
-    all_mu = np.concatenate(all_mu, axis = 0)
-    all_var = np.concatenate(all_var, axis = 0)
-     
-    return all_outputs, all_mu, all_var 
+            
+    return np.concatenate(all_outputs, axis = 0)
 
 class EarlyStopper:
     def __init__(self, patience=1, min_delta=0):
